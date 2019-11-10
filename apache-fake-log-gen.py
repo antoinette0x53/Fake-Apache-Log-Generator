@@ -39,6 +39,7 @@ class switch(object):
             return False
 
 parser = argparse.ArgumentParser(__file__, description="Fake Apache Log Generator")
+parser.add_argument("--out-path","-op",dest="output_path", help="Specify path for output. default is current dir", type=str)
 parser.add_argument("--output", "-o", dest='output_type', help="Write to a Log file, a gzip file or to STDOUT", choices=['LOG','GZ','CONSOLE'] )
 parser.add_argument("--log-format", "-l", dest='log_format', help="Log format, Common or Extended Log Format ", choices=['CLF','ELF'], default="ELF" )
 parser.add_argument("--num", "-n", dest='num_lines', help="Number of lines to generate (0 for infinite)", type=int, default=1)
@@ -51,6 +52,7 @@ log_lines = args.num_lines
 file_prefix = args.file_prefix
 output_type = args.output_type
 log_format = args.log_format
+output_path = '' if not args.output_path else args.output_path
 
 faker = Faker()
 
@@ -61,10 +63,10 @@ outFileName = 'access_log_'+timestr+'.log' if not file_prefix else file_prefix+'
 
 for case in switch(output_type):
     if case('LOG'):
-        f = open(outFileName,'w')
+        f = open(output_path+outFileName,'w')
         break
     if case('GZ'):
-        f = gzip.open(outFileName+'.gz','w')
+        f = gzip.open(output_path+outFileName+'.gz','w')
         break
     if case('CONSOLE'): pass
     if case():
